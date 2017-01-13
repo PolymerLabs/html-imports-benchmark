@@ -24,6 +24,11 @@
     document.write(
       `<script src="${src}" onload="window.dispatchEvent(new CustomEvent('HTMLImportsReady'))"/>`
     );
+    document.addEventListener('HTMLImportsLoaded', function() {
+      var success = document.createElement('h2');
+      success.textContent = 'HTMLImportsLoaded!';
+      document.body.appendChild(success);
+    })
   </script>
 
   <script src='../webcomponentsjs/src/pre-polyfill.js'></script>
