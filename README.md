@@ -6,3 +6,4 @@ Performance tests for html-imports v0 vs v1 implementations.
   $ bower install
   $ polymer serve
 ```
+Then open `index.html` and run the tests.
