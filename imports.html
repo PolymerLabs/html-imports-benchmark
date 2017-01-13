@@ -26,17 +26,16 @@
 
     function importsReady() {
       time = new Date();
-      console.time('html-imports');
+      //console.time('html-imports');
     }
 
     function importsLoaded() {
-      console.timeEnd('html-imports');
+      //console.timeEnd('html-imports');
       if (time) {
         time = new Date() - time;
       }
-      var top = window.opener || window.top;
-      if (top.importsLoaded) {
-        top.importsLoaded(time, window);
+      if (window.opener && window.opener.importsLoaded) {
+        window.opener.importsLoaded(time, window);
       }
       var success = document.createElement('h2');
       success.textContent = 'HTMLImportsLoaded!';
