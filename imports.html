@@ -21,14 +21,32 @@
     else if (window.location.href.indexOf('html-imports=v1-es6') !== -1) {
       src = '../html-imports-v1/src/html-imports.js';
     }
-    document.write(
-      `<script src="${src}" onload="window.dispatchEvent(new CustomEvent('HTMLImportsReady'))"/>`
-    );
-    document.addEventListener('HTMLImportsLoaded', function() {
+
+    var time = 0;
+
+    function importsReady() {
+      time = new Date();
+      console.time('html-imports');
+    }
+
+    function importsLoaded() {
+      console.timeEnd('html-imports');
+      if (time) {
+        time = new Date() - time;
+      }
+      var top = window.opener || window.top;
+      if (top.importsLoaded) {
+        top.importsLoaded(time, window);
+      }
       var success = document.createElement('h2');
       success.textContent = 'HTMLImportsLoaded!';
       document.body.appendChild(success);
-    })
+    }
+
+    document.addEventListener('HTMLImportsLoaded', importsLoaded);
+    document.write(
+      `<script src="${src}" onload="importsReady()"/>`
+    );
   </script>
 
   <script src='../webcomponentsjs/src/pre-polyfill.js'></script>
