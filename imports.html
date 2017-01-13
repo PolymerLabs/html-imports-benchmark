@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>paper-elements</title>
+
+  <script src='../webcomponents-platform/webcomponents-platform.js'></script>
+  <script src='../URL/url.js'></script>
+  <script src='../template/template.js'></script>
+  <script src='../es6-promise/dist/es6-promise.auto.min.js'></script>
+
+  <script>
+    // default to v0
+    var src = '../html-imports-v0/src/html-imports.js';
+    // v1-es5
+    if (window.location.href.indexOf('html-imports=v1-es5') !== -1) {
+      src = '../html-imports-v1/html-imports.min.js';
+    }
+    // vi-es6
+    else if (window.location.href.indexOf('html-imports=v1-es6') !== -1) {
+      src = '../html-imports-v1/src/html-imports.js';
+    }
+    document.write(
+      `<script src="${src}" onload="window.dispatchEvent(new CustomEvent('HTMLImportsReady'))"/>`
+    );
+  </script>
+
+  <script src='../webcomponentsjs/src/pre-polyfill.js'></script>
+  <script src='../custom-elements/custom-elements.min.js'></script>
+  <script src='../shadydom/shadydom.min.js'></script>
+  <script src='../shadycss/shadycss.min.js'></script>
+  <script src='../webcomponentsjs/src/post-polyfill.js'></script>
+  <script src='../webcomponentsjs/src/unresolved.js'></script>
+
+  <link rel="import" href="../iron-elements/iron-elements.html">
+  <link rel="import" href="../paper-elements/paper-elements.html">
+</head>
+
+<body>
+  This page imports iron-elements and paper-elements
+</body>
+
+</html>

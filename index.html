@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+
+<body>
+  <select id="version" onchange="versionChanged()">
+    <option value="v0" selected>v0</option>
+    <option value="v1-es5">v1-es5</option>
+    <option value="v1-es6">v1-es6</option>
+  </select>
+  <button onclick="startTests()">start</button>
+  <button onclick="stopTests()">stop</button>
+  <pre id="out">html-imports v0
+</pre>
+  <script>
+    var count = 0;
+    var total = 20;
+
+    function startTests() {
+      count = 0;
+      runTest();
+    }
+
+    function stopTests() {
+      count = total;
+      clearTimeout(runTest.timeout);
+    }
+
+    function runTest() {
+      count++;
+      var time = 0;
+      var win = window.open('imports.html?html-imports=' + version.value,
+        'test#' + count);
+      if (!win) {
+        // user didn't allow opening popup :(
+        return;
+      }
+      win.addEventListener('HTMLImportsReady', function() {
+        time = new Date();
+        console.time('html-imports');
+      });
+      win.addEventListener('HTMLImportsLoaded', function() {
+        if (time === 0) {
+          win.close();
+          alert('HTMLImportsReady never fired. Stopping test.');
+          return;
+        }
+        // Log stats.
+        console.timeEnd('html-imports');
+        out.textContent += (new Date() - time) + '\n';
+        win.close();
+        if (count < total) {
+          runTest.timeout = setTimeout(runTest, 1000);
+        }
+      });
+    }
+
+    function versionChanged() {
+      out.textContent += 'html-imports ' + version.value + '\n';
+    }
+  </script>
+</body>
+
+</html>

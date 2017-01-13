@@ -1,0 +1,21 @@
+{
+  "name": "html-imports-benchmark",
+  "authors": [
+    "valdrinkoshi <valdrin@google.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "dependencies": {
+    "webcomponentsjs": "v1",
+    "paper-elements": "*",
+    "iron-elements": "*",
+    "html-imports-v0": "webcomponents/html-imports#v0",
+    "html-imports-v1": "webcomponents/html-imports#cleanup"
+  },
+  "resolutions": {
+    "webcomponentsjs": "v1"
+  }
+}
