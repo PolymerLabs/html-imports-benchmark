@@ -48,9 +48,7 @@
     }
 
     document.addEventListener('HTMLImportsLoaded', importsLoaded);
-    document.write(
-      `<script src="${src}" onload="scriptLoaded()"><\/script>`
-    );
+    document.write(`<script src="${src}" onload="scriptLoaded()"><\\/script>`);
   </script>
 
   <script src='../webcomponentsjs/src/pre-polyfill.js'></script>
