@@ -5,6 +5,9 @@
   <meta charset="utf-8">
   <title>paper-elements</title>
 
+  <script>
+    window.WebComponents = {flags:{}};
+  </script>
   <script src='../webcomponents-platform/webcomponents-platform.js'></script>
   <script src='../URL/url.js'></script>
   <script src='../template/template.js'></script>
@@ -14,17 +17,17 @@
     // default to v0
     var src = '../html-imports-v0/src/html-imports.js';
     // v1-es5
-    if (window.location.href.indexOf('html-imports=v1-es5') !== -1) {
+    if (window.location.href.indexOf('version=v1-es5') !== -1) {
       src = '../html-imports-v1/html-imports.min.js';
     }
     // vi-es6
-    else if (window.location.href.indexOf('html-imports=v1-es6') !== -1) {
+    else if (window.location.href.indexOf('version=v1-es6') !== -1) {
       src = '../html-imports-v1/src/html-imports.js';
     }
 
     var time = 0;
 
-    function importsReady() {
+    function scriptLoaded() {
       time = new Date();
       //console.time('html-imports');
     }
@@ -46,7 +49,7 @@
 
     document.addEventListener('HTMLImportsLoaded', importsLoaded);
     document.write(
-      `<script src="${src}" onload="importsReady()"/>`
+      `<script src="${src}" onload="scriptLoaded()"><\/script>`
     );
   </script>
 
