@@ -34,12 +34,14 @@
       if (time) {
         time = new Date() - time;
       }
-      if (window.opener && window.opener.importsLoaded) {
-        window.opener.importsLoaded(time, window);
-      }
+
       var success = document.createElement('h2');
       success.textContent = 'HTMLImportsLoaded!';
       document.body.appendChild(success);
+
+      if (window.opener && window.opener !== window && window.opener.importsLoaded) {
+        window.opener.importsLoaded(time, window);
+      }
     }
 
     document.addEventListener('HTMLImportsLoaded', importsLoaded);
