@@ -6,7 +6,9 @@
   <title>paper-elements</title>
 
   <script>
-    window.WebComponents = {flags:{}};
+    window.WebComponents = {
+      flags: {}
+    };
   </script>
   <script src='../webcomponents-platform/webcomponents-platform.js'></script>
   <script src='../URL/url.js'></script>
@@ -27,28 +29,22 @@
 
     var time = 0;
 
-    function scriptLoaded() {
-      time = new Date();
-      //console.time('html-imports');
-    }
-
-    function importsLoaded() {
-      //console.timeEnd('html-imports');
+    document.addEventListener('HTMLImportsLoaded', function() {
       if (time) {
-        time = new Date() - time;
+        time = performance.now() - time;
       }
 
       var success = document.createElement('h2');
       success.textContent = 'HTMLImportsLoaded!';
       document.body.appendChild(success);
 
-      if (window.opener && window.opener !== window && window.opener.importsLoaded) {
-        window.opener.importsLoaded(time, window);
+      if (window.opener && window.opener.importsLoaded) {
+        window.opener.importsLoaded(time);
+        window.close();
       }
-    }
-
-    document.addEventListener('HTMLImportsLoaded', importsLoaded);
-    document.write(`<script src="${src}" onload="scriptLoaded()"><\\/script>`);
+    });
+    document.write(
+      `<script src="${src}" onload="time = performance.now()"><\\/script>`);
   </script>
 
   <script src='../webcomponentsjs/src/pre-polyfill.js'></script>

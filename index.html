@@ -16,12 +16,14 @@
   <script>
     var count = 0;
     var total = 20;
-    version = 'v0';
-    var results = {
-      'v0': [],
-      'v1-es5': [],
-      'v1-es6': []
-    };
+
+    var versions = ['v0', 'v1-es5', 'v1-es6'];
+    var version = sel.value;
+
+    var times = {};
+    for (var i = 0; i < versions.length; i++) {
+      times[versions[i]] = [];
+    }
 
     function startTests() {
       stopTests();
@@ -38,21 +40,17 @@
       window.open('imports.html?version=' + version, 'test#' + count);
     }
 
-    function printResults() {
-      out.textContent = 'v0\tv1-es5\tv1-es6\n';
+    function printTimes() {
+      out.textContent = 'v0\t\tv1-es5\t\tv1-es6\n';
       for (var i = 0; i < total; i++) {
         out.textContent +=
-          `${results['v0'][i] || '-'}\t${results['v1-es5'][i] || '-'}\t${results['v1-es6'][i] || '-'}\n`;
+          `${times['v0'][i] || '-'}\t\t${times['v1-es5'][i] || '-'}\t\t${times['v1-es6'][i] || '-'}\n`;
       }
     }
 
-    function importsLoaded(time, win) {
-      if (!win || !time) {
-        return;
-      }
-      results[version].push(time);
-      printResults();
-      win.close();
+    function importsLoaded(time) {
+      times[version].push(parseFloat(time.toFixed(3)));
+      printTimes();
       if (count < total) {
         runTest.timeout = setTimeout(runTest, 1000);
       }
