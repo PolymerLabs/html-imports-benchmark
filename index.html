@@ -43,30 +43,31 @@
     }
 
     function printTimes() {
-      out.textContent =
-        `v0\t\tv1\t\tv1(es6)\t\tv0 - v1\t\t\tv1 - v1(es6)
-${
-  times['v0'].avg.toFixed(2)}\t\t${times['v1-es5'].avg.toFixed(2)
-}\t\t${
-  times['v1-es6'].avg.toFixed(2)
-}\t\t${
-  (times['v0'].avg - times['v1-es5'].avg).toFixed(2)
-} (${
-  (100 * (times['v0'].avg - times['v1-es5'].avg) / times['v0'].avg).toFixed(2)
-}%)\t\t${
-  (times['v1-es5'].avg - times['v1-es6'].avg).toFixed(2)
-} (${
-  (100 * (times['v1-es5'].avg - times['v1-es6'].avg) / times['v1-es5'].avg).toFixed(2)
-}%)
+      var res =
+        `\tv0\t\tv1\t\tv1(es6)\t\tv0 - v1\t\t\tv1 - v1(es6)
 
+Avg\t${times['v0'].avg.toFixed(2)}\t\t${times['v1-es5'].avg.toFixed(2)}\t\t${times['v1-es6'].avg.toFixed(2)}\t\t`;
 
-v0\t\tv1\t\tv1(es6)
-`;
+      if (times['v0'].length && times['v1-es5'].length) {
+        var diff = times['v0'].avg - times['v1-es5'].avg;
+        var perc = 100 * diff / times['v0'].avg;
+        res += `${diff.toFixed(2)} (${perc.toFixed(2)}%)\t`;
+      } else {
+        res += `-\t\t\t`;
+      }
+      if (times['v1-es5'].length && times['v1-es6'].length) {
+        var diff = times['v1-es5'].avg - times['v1-es6'].avg;
+        var perc = 100 * diff / times['v1-es5'].avg;
+        res += `${diff.toFixed(2)} (${perc.toFixed(2)}%)`;
+      } else {
+        res += `-`;
+      }
+      res += `\n\n#\n\n`;
       var maxLength = Math.max(0, times['v0'].length, times['v1-es5'].length,
         times['v1-es6'].length);
       for (var i = 0; i < maxLength; i++) {
-        out.textContent +=
-          `${
+        res +=
+          `${i}\t${
             times['v0'][i] ? times['v0'][i].toFixed(2) : '-'
           }\t\t${
             times['v1-es5'][i] ? times['v1-es5'][i].toFixed(2) : '-'
@@ -74,6 +75,7 @@ v0\t\tv1\t\tv1(es6)
             times['v1-es6'][i] ? times['v1-es6'][i].toFixed(2) : '-'
           }\n`;
       }
+      out.textContent = res;
     }
 
     function importsLoaded(time) {
