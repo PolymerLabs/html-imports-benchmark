@@ -1,10 +1,26 @@
 <!doctype html>
 <html>
 
+<head>
+  <style>
+    table {
+      font-family: monospace;
+      width: 100%;
+      border: 1px solid;
+    }
+
+    td,
+    th {
+      padding: 10px;
+      text-align: right;
+    }
+  </style>
+</head>
+
 <body>
   <label for="sel">html-imports</label>
   <select id="sel" onchange="version = this.value">
-    <option value="v0" selected>v0</option>
+    <option value="v0">v0</option>
     <option value="v1-es5">v1-es5</option>
     <option value="v1-es6">v1-es6</option>
   </select>
@@ -12,13 +28,15 @@
     <button onclick="startTests()">start</button>
     <button onclick="stopTests()">stop</button>
   </p>
-  <pre id="out"></pre>
+
+  <table id="out"></table>
   <script>
     var count = 0;
-    var total = 20;
+    var total = 10;
 
     var versions = ['v0', 'v1-es5', 'v1-es6'];
-    var version = sel.value;
+    var version = versions[0];
+    sel.value = version;
 
     var times = {};
     for (var i = 0; i < versions.length; i++) {
@@ -43,39 +61,69 @@
     }
 
     function printTimes() {
-      var res =
-        `\tv0\t\tv1\t\tv1(es6)\t\tv0 - v1\t\t\tv1 - v1(es6)
+      out.innerHTML = '';
 
-Avg\t${times['v0'].avg.toFixed(2)}\t\t${times['v1-es5'].avg.toFixed(2)}\t\t${times['v1-es6'].avg.toFixed(2)}\t\t`;
+      printRow([
+        '',
+        'v0',
+        'v1',
+        'v1 (es6)',
+        'v0-v1 (ms)',
+        'v0-v1 (%)',
+        'v1-v1 (es6) (ms)',
+        'v1-v1 (es6) (%)'
+      ], 'th');
+
+      var avgsRow = [
+        'avg',
+        times['v0'].avg.toFixed(2),
+        times['v1-es5'].avg.toFixed(2),
+        times['v1-es6'].avg.toFixed(2)
+      ];
 
       if (times['v0'].length && times['v1-es5'].length) {
         var diff = times['v0'].avg - times['v1-es5'].avg;
         var perc = 100 * diff / times['v0'].avg;
-        res += `${diff.toFixed(2)} (${perc.toFixed(2)}%)\t`;
+        avgsRow.push(diff.toFixed(2));
+        avgsRow.push(perc.toFixed(2));
       } else {
-        res += `-\t\t\t`;
+        avgsRow.push('-');
+        avgsRow.push('-');
       }
       if (times['v1-es5'].length && times['v1-es6'].length) {
         var diff = times['v1-es5'].avg - times['v1-es6'].avg;
         var perc = 100 * diff / times['v1-es5'].avg;
-        res += `${diff.toFixed(2)} (${perc.toFixed(2)}%)`;
+        avgsRow.push(diff.toFixed(2));
+        avgsRow.push(perc.toFixed(2));
       } else {
-        res += `-`;
+        avgsRow.push('-');
+        avgsRow.push('-');
       }
-      res += `\n\n#\n\n`;
+
+      printRow(avgsRow);
+      printRow(['#']);
+
       var maxLength = Math.max(0, times['v0'].length, times['v1-es5'].length,
         times['v1-es6'].length);
       for (var i = 0; i < maxLength; i++) {
-        res +=
-          `${i}\t${
-            times['v0'][i] ? times['v0'][i].toFixed(2) : '-'
-          }\t\t${
-            times['v1-es5'][i] ? times['v1-es5'][i].toFixed(2) : '-'
-          }\t\t${
-            times['v1-es6'][i] ? times['v1-es6'][i].toFixed(2) : '-'
-          }\n`;
+        printRow([
+          i,
+          times['v0'][i] ? times['v0'][i].toFixed(2) : '-',
+          times['v1-es5'][i] ? times['v1-es5'][i].toFixed(2) : '-',
+          times['v1-es6'][i] ? times['v1-es6'][i].toFixed(2) : '-'
+        ]);
       }
-      out.textContent = res;
+    }
+
+    function printRow(cells, cellType) {
+      cellType = cellType || 'td';
+      var tr = document.createElement('tr');
+      for (var i = 0; i < cells.length; i++) {
+        var cell = document.createElement(cellType);
+        cell.textContent = cells[i];
+        tr.appendChild(cell);
+      }
+      out.appendChild(tr);
     }
 
     function importsLoaded(time) {
@@ -85,6 +133,16 @@ Avg\t${times['v0'].avg.toFixed(2)}\t\t${times['v1-es5'].avg.toFixed(2)}\t\t${tim
       printTimes();
       if (count < total) {
         runTest.timeout = setTimeout(runTest, 1000);
+      } else {
+        // test next version
+        version = versions[versions.indexOf(version) + 1];
+        if (version) {
+          runTest.timeout = setTimeout(startTests, 1000);
+        } else {
+          version = versions[0];
+        }
+        // update select.
+        sel.value = version;
       }
     }
   </script>
