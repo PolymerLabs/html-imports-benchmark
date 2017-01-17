@@ -22,7 +22,9 @@
 
     var times = {};
     for (var i = 0; i < versions.length; i++) {
-      times[versions[i]] = [];
+      var arr = [];
+      arr.avg = 0;
+      times[versions[i]] = arr;
     }
 
     function startTests() {
@@ -41,15 +43,43 @@
     }
 
     function printTimes() {
-      out.textContent = 'v0\t\tv1-es5\t\tv1-es6\n';
-      for (var i = 0; i < total; i++) {
+      out.textContent =
+        `v0\t\tv1\t\tv1(es6)\t\tv0 - v1\t\t\tv1 - v1(es6)
+${
+  times['v0'].avg.toFixed(2)}\t\t${times['v1-es5'].avg.toFixed(2)
+}\t\t${
+  times['v1-es6'].avg.toFixed(2)
+}\t\t${
+  (times['v0'].avg - times['v1-es5'].avg).toFixed(2)
+} (${
+  (100 * (times['v0'].avg - times['v1-es5'].avg) / times['v0'].avg).toFixed(2)
+}%)\t\t${
+  (times['v1-es5'].avg - times['v1-es6'].avg).toFixed(2)
+} (${
+  (100 * (times['v1-es5'].avg - times['v1-es6'].avg) / times['v1-es5'].avg).toFixed(2)
+}%)
+
+
+v0\t\tv1\t\tv1(es6)
+`;
+      var maxLength = Math.max(0, times['v0'].length, times['v1-es5'].length,
+        times['v1-es6'].length);
+      for (var i = 0; i < maxLength; i++) {
         out.textContent +=
-          `${times['v0'][i] || '-'}\t\t${times['v1-es5'][i] || '-'}\t\t${times['v1-es6'][i] || '-'}\n`;
+          `${
+            times['v0'][i] ? times['v0'][i].toFixed(2) : '-'
+          }\t\t${
+            times['v1-es5'][i] ? times['v1-es5'][i].toFixed(2) : '-'
+          }\t\t${
+            times['v1-es6'][i] ? times['v1-es6'][i].toFixed(2) : '-'
+          }\n`;
       }
     }
 
     function importsLoaded(time) {
-      times[version].push(parseFloat(time.toFixed(3)));
+      times[version].push(time);
+      times[version].avg = (times[version].avg * (times[version].length - 1) +
+        time) / times[version].length;
       printTimes();
       if (count < total) {
         runTest.timeout = setTimeout(runTest, 1000);
