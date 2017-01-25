@@ -22,7 +22,7 @@
     if (window.location.href.indexOf('version=v1-es5') !== -1) {
       src = '../html-imports-v1/html-imports.min.js';
     }
-    // vi-es6
+    // v1-es6
     else if (window.location.href.indexOf('version=v1-es6') !== -1) {
       src = '../html-imports-v1/src/html-imports.js';
     }
@@ -38,7 +38,12 @@
       success.textContent = 'HTMLImportsLoaded!';
       document.body.appendChild(success);
 
-      if (window.opener && window.opener.importsLoaded) {
+      // opened by an iframe.
+      if (window.top && window.top.importsLoaded) {
+        window.top.importsLoaded(time);
+      }
+      // opened by another tab.
+      else if (window.opener && window.opener.importsLoaded) {
         window.opener.importsLoaded(time);
         window.close();
       }

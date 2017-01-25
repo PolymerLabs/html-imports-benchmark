@@ -3,6 +3,11 @@
 
 <head>
   <style>
+    iframe {
+      width: 100%;
+      height: 200px;
+    }
+
     table {
       font-family: monospace;
       width: 100%;
@@ -18,6 +23,7 @@
 </head>
 
 <body>
+  <iframe id="iframe"></iframe>
   <label for="sel">html-imports</label>
   <select id="sel" onchange="version = this.value">
     <option value="v0">v0</option>
@@ -31,8 +37,9 @@
 
   <table id="out"></table>
   <script>
+    var shouldStop = false;
     var count = 0;
-    var total = 10;
+    var total = 30;
 
     var versions = ['v0', 'v1-es5', 'v1-es6'];
     var version = versions[0];
@@ -45,19 +52,33 @@
       times[versions[i]] = arr;
     }
 
+    // skip es6 in IE
+    if (/Trident/.test(navigator.userAgent)) {
+      versions.pop();
+      sel.removeChild(sel.children[2]);
+    }
+
     function startTests() {
       stopTests();
       count = 0;
-      runTest();
+      shouldStop = false;
+      // After next render.
+      requestAnimationFrame(function() {
+        setTimeout(runTest);
+      });
     }
 
     function stopTests() {
-      clearTimeout(runTest.timeout);
+      shouldStop = true;
     }
 
     function runTest() {
+      if (shouldStop) {
+        return;
+      }
       count++;
-      window.open('imports.html?version=' + version, 'test#' + count);
+      (iframe.window || iframe.contentWindow).location.href =
+        `imports.html?version=${version}&count=${count}`;
     }
 
     function printTimes() {
@@ -74,6 +95,24 @@
         'v1-v1 (es6) (%)'
       ], 'th');
 
+      var avgsRow = getAvgsRow();
+      console.log(`${count-1} ${avgsRow.join('|')}`);
+      printRow(avgsRow);
+      printRow(['#']);
+
+      var maxLength = Math.max(0, times['v0'].length, times['v1-es5'].length,
+        times['v1-es6'].length);
+      for (var i = maxLength - 1; i >= 0; i--) {
+        printRow([
+          i,
+          times['v0'][i] ? times['v0'][i].toFixed(2) : '-',
+          times['v1-es5'][i] ? times['v1-es5'][i].toFixed(2) : '-',
+          times['v1-es6'][i] ? times['v1-es6'][i].toFixed(2) : '-'
+        ]);
+      }
+    }
+
+    function getAvgsRow() {
       var avgsRow = [
         'avg',
         times['v0'].avg.toFixed(2),
@@ -99,20 +138,7 @@
         avgsRow.push('-');
         avgsRow.push('-');
       }
-
-      printRow(avgsRow);
-      printRow(['#']);
-
-      var maxLength = Math.max(0, times['v0'].length, times['v1-es5'].length,
-        times['v1-es6'].length);
-      for (var i = 0; i < maxLength; i++) {
-        printRow([
-          i,
-          times['v0'][i] ? times['v0'][i].toFixed(2) : '-',
-          times['v1-es5'][i] ? times['v1-es5'][i].toFixed(2) : '-',
-          times['v1-es6'][i] ? times['v1-es6'][i].toFixed(2) : '-'
-        ]);
-      }
+      return avgsRow;
     }
 
     function printRow(cells, cellType) {
@@ -132,12 +158,14 @@
         time) / times[version].length;
       printTimes();
       if (count < total) {
-        runTest.timeout = setTimeout(runTest, 1000);
+        // Let it breathe.
+        setTimeout(runTest, 1000);
       } else {
         // test next version
         version = versions[versions.indexOf(version) + 1];
         if (version) {
-          runTest.timeout = setTimeout(startTests, 1000);
+          // Let it breathe.
+          setTimeout(startTests, 1000);
         } else {
           version = versions[0];
         }
