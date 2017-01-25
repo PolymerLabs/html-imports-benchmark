@@ -11,6 +11,8 @@
   "dependencies": {
     "html-imports-v0": "webcomponents/html-imports#v0",
     "html-imports-v1": "webcomponents/html-imports#cleanup",
+    "template": "webcomponents/template#master",
+    "webcomponents-platform": "webcomponents/webcomponents-platform#master",
     "app-localize-behavior": "PolymerElements/app-localize-behavior#2.0-preview",
     "iron-a11y-keys-behavior": "PolymerElements/iron-a11y-keys-behavior#2.0-preview",
     "iron-meta": "PolymerElements/iron-meta#2.0-preview",

@@ -5,15 +5,10 @@
   <meta charset="utf-8">
   <title>imports</title>
 
-  <script>
-    window.WebComponents = {
-      flags: {}
-    };
-  </script>
   <script src='../webcomponents-platform/webcomponents-platform.js'></script>
-  <script src='../URL/url.js'></script>
   <script src='../template/template.js'></script>
   <script src='../es6-promise/dist/es6-promise.auto.min.js'></script>
+  <script src='../custom-elements/custom-elements.min.js'></script>
 
   <script>
     // default to v0
@@ -48,16 +43,8 @@
         window.close();
       }
     });
-    document.write('<script src="' + src +
-      '" onload="time = performance.now()"><\/script>');
+    document.write('<script src="' + src + '" onload="time = performance.now()"><\/script>');
   </script>
-
-  <script src='../webcomponentsjs/src/pre-polyfill.js'></script>
-  <script src='../custom-elements/custom-elements.min.js'></script>
-  <script src='../shadydom/shadydom.min.js'></script>
-  <script src='../shadycss/shadycss.min.js'></script>
-  <script src='../webcomponentsjs/src/post-polyfill.js'></script>
-  <script src='../webcomponentsjs/src/unresolved.js'></script>
 
   <link rel="import" href="../app-localize-behavior/app-localize-behavior.html">
   <link rel="import" href="../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
