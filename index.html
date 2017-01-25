@@ -30,11 +30,11 @@
     <option value="v1-es5">v1-es5</option>
     <option value="v1-es6">v1-es6</option>
   </select>
+  <pre id="copy"> </pre>
   <p>
     <button onclick="startTests()">start</button>
     <button onclick="stopTests()">stop</button>
   </p>
-
   <table id="out"></table>
   <script>
     var shouldStop = false;
@@ -96,7 +96,7 @@
       ], 'th');
 
       var avgsRow = getAvgsRow();
-      console.log(`${count-1} ${avgsRow.join('|')}`);
+      copy.textContent = `#${count-1} | ${avgsRow.join(' | ')}`;
       printRow(avgsRow);
       printRow(['#']);
 
